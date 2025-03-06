@@ -1,0 +1,37 @@
+cat > hauif_system/core/system.py << 'EOL'
+import hashlib
+import json
+import pandas as pd
+import asyncio
+from asyncio import TaskGroup
+from typing import Dict, Any
+from aiolimiter import AsyncLimiter
+
+import structlog
+from hauif_system.core.config import settings
+from hauif_system.core.models import CorruptionCase
+from hauif_system.core.exceptions import HAUIFError, ValidationError
+from hauif_system.core.monitoring import tracer, PROCESSING_TIME, REQUESTS, CORRUPTION_CASES
+from hauif_system.blockchain.ledger import BlockchainLedger
+from hauif_system.blockchain.ethereum import EthereumHAUIF
+from hauif_system.ml.kernel import HolisticReasoningKernel
+from hauif_system.ml.simulator import SimulatedReality
+
+logger = structlog.get_logger("HAUIFSystem")
+rate_limiter = AsyncLimiter(10, 1)  # 10 requests per second
+
+class HAUIFSystem:
+    def __init__(self):
+        self.settings = settings
+        self.ledger = BlockchainLedger(difficulty=settings.difficulty, file_path=settings.ledger_path)
+        self.simulator = SimulatedReality()
+        self.reasoning_kernel = HolisticReasoningKernel()
+        self.eth_interface = EthereumHAUIF(
+            infura_url=settings.infura_url,
+            contract_address=settings.contract_address,
+            private_key=settings.private_key
+        )
+        self.processed_cases = set()  # For idempotency
+
+    async def process_case(self, input_data: Dict) -> Dict[str, Any]:
+        with tracer.start_as_current_

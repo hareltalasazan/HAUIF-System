@@ -1,0 +1,2 @@
+mkdir -p hauif_system/core hauif_system/ml hauif_system/blockchain hauif_system/api tests docs
+touch hauif_system/__init__.py hauif_system/core/__init__.py hauif_system/ml/__init__.py hauif_system/blockchain/__init__.py hauif_system/api/__init__.py

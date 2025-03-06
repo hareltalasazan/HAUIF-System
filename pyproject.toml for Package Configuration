@@ -1,0 +1,70 @@
+cat > pyproject.toml << 'EOL'
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hauif_system"
+version = "0.1.0"
+description = "Holistic Analysis Unified Intelligence Framework"
+readme = "README.md"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "aiofiles",
+    "aiolimiter",
+    "asyncio",
+    "mlflow",
+    "numpy",
+    "opentelemetry-api",
+    "opentelemetry-sdk",
+    "pandas",
+    "prometheus-client",
+    "pydantic>=2.0.0",
+    "pydantic-settings",
+    "scikit-learn",
+    "shap",
+    "structlog",
+    "watchfiles",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "flake8",
+    "hypothesis",
+    "mypy",
+    "pre-commit",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+]
+
+[tool.setuptools]
+packages = ["hauif_system"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+asyncio_mode = "auto"
+EOL
